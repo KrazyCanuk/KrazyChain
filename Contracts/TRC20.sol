@@ -1,5 +1,7 @@
 pragma solidity >=0.4.22 <0.6.0;
 import './ITRC20.sol';
+import './MinterRole.sol';
+
 
 library SafeMath {
 
@@ -253,5 +255,18 @@ contract TRC20 is ITRC20 {
         _allowed[account][msg.sender] = _allowed[account][msg.sender].sub(
             value);
         _burn(account, value);
+    }
+}
+
+contract TRC20Mintable is TRC20, MinterRole {
+    /**
+     * @dev Function to mint tokens
+     * @param to The address that will receive the minted tokens.
+     * @param value The amount of tokens to mint.
+     * @return A boolean that indicates if the operation was successful.
+     */
+    function mint(address to, uint256 value) public onlyMinter returns (bool) {
+        _mint(to, value);
+        return true;
     }
 }
